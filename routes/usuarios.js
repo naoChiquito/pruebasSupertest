@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { check } = require('express-validator');
 const swaggerJsdoc = require('swagger-jsdoc'); 
 const swaggerUi = require('swagger-ui-express');
 
@@ -10,7 +11,7 @@ router.get('/', obtenerUsuarios);
 router.put('/:id', actualizarUsuario);
 router.delete('/:id', eliminarUsuario);
 
-module.exports = router;
+const { validarJWT } = require('../middlewares/validar-jwt');
 
 
 /**
@@ -43,3 +44,13 @@ module.exports = router;
  *         description: Datos inválidos
  */
 
+router.put('/:id', [
+    validarJWT, 
+    check('id', 'No es un ID válido').isInt(),
+], actualizarUsuario);
+router.delete('/:id', [
+    validarJWT, 
+    check('id', 'No es un ID válido').isInt(),
+], eliminarUsuario);
+
+module.exports = router;
